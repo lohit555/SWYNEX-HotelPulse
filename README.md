@@ -61,7 +61,7 @@ A manageable subset will be used for the prototype. Since the dataset does not p
 
 The prototype will be evaluated using a held-out, manually labeled sample of reviews.
 
-- Macro-F1, precision, and recall:** Measure classification performance.
+- Macro-F1, precision, and recall: Measure classification performance.
 - Confusion matrix: Identify commonly misclassified categories.
 - Priority review: Compare predicted priorities with reference assessments using the documented scoring rubric.
 - Functional tests: Check input handling, output validity, sorting, and API error handling.
