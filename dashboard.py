@@ -1,9 +1,13 @@
-
 import html
 
 import streamlit as st
+import streamlit.components.v1 as components
 
-from analyzer import analyze_complaint, calculate_priority, PRIORITY_LEVELS
+from analyzer import (
+    analyze_complaint,
+    calculate_priority,
+    PRIORITY_LEVELS,
+)
 
 st.set_page_config(
     page_title="HotelPulse | Complaint Analyzer",
@@ -34,14 +38,12 @@ st.markdown(
         margin: 4px 0 24px 0;
     }
 
-    /* Make form labels visible */
     div[data-testid="stTextArea"] label,
     div[data-testid="stSelectbox"] label {
         color: #14213d !important;
         font-weight: 600;
     }
 
-    /* Fix complaint text visibility */
     div[data-testid="stTextArea"] textarea {
         background-color: #262730 !important;
         color: #ffffff !important;
@@ -70,7 +72,7 @@ st.markdown(
         border: 1px solid #e3e9f2;
         border-radius: 16px;
         padding: 22px;
-        min-height: 150px;
+        min-height: 145px;
         box-shadow: 0 3px 12px rgba(20, 33, 61, 0.04);
     }
 
@@ -88,12 +90,39 @@ st.markdown(
         overflow-wrap: anywhere;
     }
 
-    .priority-pill {
-        display: inline-block;
-        padding: 8px 16px;
-        border-radius: 10px;
-        font-size: 1.2rem;
-        font-weight: 800;
+    div[data-testid="stExpander"] details {
+        background: #ffffff !important;
+        border: 1px solid #e3e9f2 !important;
+        border-radius: 12px !important;
+    }
+
+    div[data-testid="stExpander"] summary {
+        background: #ffffff !important;
+        border-radius: 12px;
+    }
+
+    div[data-testid="stExpander"] summary,
+    div[data-testid="stExpander"] summary p,
+    div[data-testid="stExpander"] summary span {
+        color: #14213d !important;
+        font-weight: 600;
+    }
+
+    div[data-testid="stExpander"] summary svg {
+        color: #14213d !important;
+        fill: #14213d !important;
+    }
+
+    div[data-testid="stExpander"] div[data-testid="stMarkdownContainer"] p,
+    div[data-testid="stExpander"] li {
+        color: #36445d !important;
+    }
+
+    .category-card {
+        min-height: 270px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
     .section-heading {
@@ -107,9 +136,9 @@ st.markdown(
         color: #36445d !important;
         font-size: 1rem;
         line-height: 1.65;
+        overflow-wrap: anywhere;
     }
 
-    /* Keep analysis text readable */
     div[data-testid="stMarkdownContainer"] h3 {
         color: #14213d !important;
     }
@@ -121,6 +150,161 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+
+# -------------------- Priority Gauge --------------------
+
+def render_priority_gauge(score: int, level: str, color: str) -> None:
+    """Render a semicircular priority gauge in an HTML component."""
+
+    score = max(0, min(100, int(score)))
+    safe_color = html.escape(color)
+    safe_level = html.escape(level)
+
+    # Legend uses the same colors as PRIORITY_LEVELS so everything matches.
+    legend_items = "".join(
+        '<span class="legend-item">'
+        f'<i class="dot" style="background:{html.escape(item["color"])}"></i>'
+        f'{html.escape(item["name"])}'
+        "</span>"
+        for item in PRIORITY_LEVELS
+    )
+
+    gauge_html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            body {{
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                background: transparent;
+            }}
+
+            .gauge-card {{
+                background: #ffffff;
+                border: 1px solid #e3e9f2;
+                border-radius: 16px;
+                padding: 16px 12px;
+                text-align: center;
+                color: #14213d;
+            }}
+
+            .gauge-title {{
+                font-size: 16px;
+                font-weight: 700;
+                color: #53627c;
+                margin-bottom: 4px;
+            }}
+
+            .gauge-svg {{
+                display: block;
+                width: 100%;
+                max-width: 320px;
+                height: auto;
+                margin: 0 auto;
+            }}
+
+            .score {{
+                font-size: 36px;
+                font-weight: 800;
+                fill: #14213d;
+            }}
+
+            .out-of {{
+                font-size: 16px;
+                fill: #53627c;
+            }}
+
+            .level {{
+                font-size: 17px;
+                font-weight: 800;
+            }}
+
+            .minmax {{
+                font-size: 12px;
+                fill: #7a879b;
+            }}
+
+            .legend {{
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 8px 12px;
+                font-size: 12px;
+                color: #53627c;
+                margin-top: 6px;
+            }}
+
+            .legend-item {{
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+            }}
+
+            .dot {{
+                width: 9px;
+                height: 9px;
+                border-radius: 50%;
+                display: inline-block;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="gauge-card">
+            <div class="gauge-title">Priority Score</div>
+
+            <svg class="gauge-svg" viewBox="0 0 300 175"
+                 role="img"
+                 aria-label="Priority score {score} out of 100, {safe_level}">
+
+                <path d="M 35 125 A 115 115 0 0 1 265 125"
+                      fill="none"
+                      stroke="#e8edf4"
+                      stroke-width="20"
+                      stroke-linecap="butt"/>
+
+                <path d="M 35 125 A 115 115 0 0 1 265 125"
+                      fill="none"
+                      stroke="{safe_color}"
+                      stroke-width="20"
+                      stroke-linecap="butt"
+                      pathLength="100"
+                      stroke-dasharray="{score} 100"/>
+
+                <text x="35" y="149"
+                      text-anchor="middle"
+                      class="minmax">0</text>
+
+                <text x="265" y="149"
+                      text-anchor="middle"
+                      class="minmax">100</text>
+
+                <text x="150" y="102" text-anchor="middle">
+                    <tspan class="score">{score}</tspan><tspan
+                        class="out-of" dx="4">/100</tspan>
+                </text>
+
+                <text x="150" y="132"
+                      text-anchor="middle"
+                      class="level"
+                      fill="{safe_color}">{safe_level}</text>
+            </svg>
+
+            <div class="legend">{legend_items}</div>
+        </div>
+    </body>
+    </html>
+    """
+
+    components.html(
+        gauge_html,
+        height=300,
+        scrolling=False,
+    )
+
 
 # -------------------- Sidebar --------------------
 
@@ -147,26 +331,28 @@ with st.sidebar:
             unsafe_allow_html=True,
         )
 
-    st.divider()
-    st.caption("Built with Python, Streamlit and Groq.")
-    st.caption("AI-generated results require human review.")
 
-# -------------------- Main dashboard --------------------
+# -------------------- Main Dashboard --------------------
 
 st.markdown(
-    '<div class="main-title">Analyze a Guest Complaint</div>',
+    '<div class="main-title">Analyze Guest Feedback</div>',
     unsafe_allow_html=True,
 )
 
 st.markdown(
     '<div class="subtitle">'
-    "Classify guest feedback and identify issues that may need attention."
+    "Identify guest feedback categories and prioritize issues "
+    "that may need hotel staff attention."
     "</div>",
     unsafe_allow_html=True,
 )
 
 examples = {
     "Choose an example...": "",
+    "Positive feedback": "I love the place!",
+    "Positive feedback with a minor issue": (
+        "I love the place, but heard some noise."
+    ),
     "Cleanliness complaint": (
         "The bathroom was dirty, there was hair in the shower, "
         "and the bedsheets looked used."
@@ -189,171 +375,159 @@ examples = {
 }
 
 selected_example = st.selectbox(
-    "Try a sample complaint",
+    "Try a sample review",
     list(examples.keys()),
 )
 
 with st.form("complaint_form"):
     complaint = st.text_area(
-        "Guest complaint",
+        "Guest feedback",
         value=examples[selected_example],
         placeholder="Describe the guest's hotel experience...",
         height=140,
         max_chars=4000,
-        help="Avoid entering names, booking numbers, or other personal information.",
+        help=(
+            "Avoid entering names, booking numbers, or other "
+            "personal information."
+        ),
     )
 
     submitted = st.form_submit_button(
-        "🔎 Analyze Complaint",
+        "🔎 Analyze Feedback",
         type="primary",
         use_container_width=True,
     )
 
-# -------------------- Analysis results --------------------
+
+# -------------------- Analysis Results --------------------
 
 if submitted:
     if not complaint.strip():
-        st.warning("Please enter a complaint before analyzing it.")
+        st.warning("Please enter guest feedback before analyzing it.")
 
     else:
         try:
-            with st.spinner("Analyzing complaint with Groq..."):
+            with st.spinner("Analyzing guest feedback with Groq..."):
                 analysis = analyze_complaint(complaint.strip())
+                priority = calculate_priority(analysis)
 
             st.divider()
             st.subheader("Analysis Results")
 
-            if not analysis.get("is_complaint", False):
-                st.info(
-                    "This text was not identified as a hotel complaint "
-                    "or review. Please check the input."
+            if analysis["category"] == "Positive":
+                st.success(
+                    "No actionable issue was detected. "
+                    "This feedback is classified as Positive."
                 )
-                st.write(
-                    analysis.get("explanation", "No explanation provided.")
-                )
-
             else:
-                priority = calculate_priority(analysis)
+                st.info(
+                    "A potential issue was detected. Even minor issues "
+                    "are categorized and assigned at least Low priority."
+                )
 
-                category_col, score_col, level_col = st.columns(3)
+            category_col, gauge_col = st.columns([1, 1.6])
 
-                with category_col:
-                    category = html.escape(str(analysis["category"]))
+            with category_col:
+                category = html.escape(str(analysis["category"]))
 
-                    st.markdown(
-                        f"""
-                        <div class="result-card">
-                            <div class="card-label">Complaint Category</div>
-                            <div class="card-value">{category}</div>
-                        </div>
-                        """,
-                        unsafe_allow_html=True,
+                st.markdown(
+                    f"""
+                    <div class="result-card category-card">
+                        <div class="card-label">Feedback Category</div>
+                        <div class="card-value">{category}</div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+            with gauge_col:
+                render_priority_gauge(
+                    priority["score"],
+                    priority["level"],
+                    priority["color"],
+                )
+
+            with st.container(border=True):
+                st.markdown(
+                    '<div class="section-heading">'
+                    '📝 Feedback Summary</div>',
+                    unsafe_allow_html=True,
+                )
+
+                summary = html.escape(
+                    str(analysis.get("summary", "No summary provided."))
+                )
+                st.markdown(
+                    f'<div class="section-text">{summary}</div>',
+                    unsafe_allow_html=True,
+                )
+
+                st.markdown("---")
+
+                st.markdown(
+                    '<div class="section-heading">'
+                    '💡 Analysis Explanation</div>',
+                    unsafe_allow_html=True,
+                )
+
+                explanation = html.escape(
+                    str(
+                        analysis.get(
+                            "explanation",
+                            "No explanation provided.",
+                        )
                     )
+                )
+                st.markdown(
+                    f'<div class="section-text">{explanation}</div>',
+                    unsafe_allow_html=True,
+                )
 
-                with score_col:
-                    st.markdown(
-                        f"""
-                        <div class="result-card">
-                            <div class="card-label">Priority Score</div>
-                            <div class="card-value">
-                                {priority['score']}/100
-                            </div>
-                        </div>
-                        """,
-                        unsafe_allow_html=True,
-                    )
+            with st.expander("View priority score breakdown"):
+                st.write(
+                    "The score uses a fixed rubric applied to the "
+                    "indicators extracted by the AI."
+                )
 
-                with level_col:
-                    level = html.escape(str(priority["level"]))
-                    color = html.escape(str(priority["color"]))
-                    background = html.escape(str(priority["background"]))
-                    description = html.escape(str(priority["description"]))
+                for item in priority["breakdown"]:
+                    st.write(f"- {item}")
 
-                    st.markdown(
-                        f"""
-                        <div class="result-card">
-                            <div class="card-label">Priority Level</div>
-                            <span class="priority-pill"
-                                style="background:{background};color:{color};">
-                                {level}
-                            </span>
-                            <p style="color:#53627c;margin-top:12px;">
-                                {description}
-                            </p>
-                        </div>
-                        """,
-                        unsafe_allow_html=True,
-                    )
+                bar_color = html.escape(str(priority["color"]))
+                bar_width = max(0, min(100, int(priority["score"])))
+                st.markdown(
+                    f"""
+                    <div style="background:#e8edf4;border-radius:999px;
+                                height:10px;overflow:hidden;margin:10px 0;">
+                        <div style="background:{bar_color};width:{bar_width}%;
+                                    height:100%;"></div>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
 
-                # Complaint summary and explanation
-                with st.container(border=True):
-                    st.markdown(
-                        '<div class="section-heading">'
-                        '📝 Complaint Summary</div>',
-                        unsafe_allow_html=True,
-                    )
-                    st.markdown(
-                        f'<div class="section-text">'
-                        f'{html.escape(str(analysis.get("summary", "No summary provided.")))}'
-                        f'</div>',
-                        unsafe_allow_html=True,
-                    )
+                st.caption(
+                    "Prototype heuristic. Validate scores against "
+                    "manually reviewed feedback before relying on them."
+                )
 
-                    st.markdown("---")
+            with st.expander("View extracted indicators"):
+                st.write(f'Severity: {analysis["severity"].title()}')
+                st.write(
+                    "Identified issue: "
+                    + ("Yes" if analysis["is_complaint"] else "No")
+                )
 
-                    st.markdown(
-                        '<div class="section-heading">'
-                        '💡 Analysis Explanation</div>',
-                        unsafe_allow_html=True,
-                    )
-                    st.markdown(
-                        f'<div class="section-text">'
-                        f'{html.escape(str(analysis.get("explanation", "No explanation provided.")))}'
-                        f'</div>',
-                        unsafe_allow_html=True,
-                    )
+                indicators = [
+                    ("Safety concern", "safety_concern"),
+                    ("Urgent language", "urgent_language"),
+                    ("Financial impact", "financial_impact"),
+                    ("Multiple issues", "multiple_issues"),
+                ]
 
-                with st.expander("View priority score breakdown"):
-                    st.write(
-                        "The score uses a fixed rubric applied to the "
-                        "indicators extracted by the AI."
-                    )
-
-                    for item in priority["breakdown"]:
-                        st.write(f"- {item}")
-
-                    st.progress(priority["score"] / 100)
-
-                    st.caption(
-                        "Prototype heuristic. Validate scores against "
-                        "manually reviewed complaints before relying on them."
-                    )
-
-                with st.expander("View extracted indicators"):
-                    st.write(f'Severity: {analysis["severity"].title()}')
-
-                    indicators = [
-                        ("Safety concern", "safety_concern"),
-                        ("Urgent language", "urgent_language"),
-                        ("Financial impact", "financial_impact"),
-                        ("Multiple issues", "multiple_issues"),
-                    ]
-
-                    for label, field in indicators:
-                        value = "Yes" if analysis.get(field) else "No"
-                        st.write(f"{label}: {value}")
+                for label, field in indicators:
+                    value = "Yes" if analysis.get(field) else "No"
+                    st.write(f"{label}: {value}")
 
         except Exception as e:
-            st.error("Could not analyze the complaint.")
-            st.error(f"Error type: {type(e).__name__}")
-            st.code(str(e))
-
-            with st.expander("Technical details"):
-                st.exception(e)
-
-st.divider()
-
-st.caption(
-    "HotelPulse is an AI internship prototype. Classifications and "
-    "priority scores may be incorrect and require human review."
-)
+            st.error("Could not analyze the guest feedback.")
+            st.code(f"{type(e).__name__}: {e}")
