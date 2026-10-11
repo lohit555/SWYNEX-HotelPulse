@@ -1,4 +1,6 @@
 
+import html
+
 import streamlit as st
 
 from analyzer import analyze_complaint, calculate_priority, PRIORITY_LEVELS
@@ -16,6 +18,7 @@ st.markdown(
     <style>
     .stApp {
         background: #f7f9fc;
+        color: #14213d;
     }
 
     .main-title {
@@ -31,8 +34,39 @@ st.markdown(
         margin: 4px 0 24px 0;
     }
 
+    /* Make form labels visible */
+    div[data-testid="stTextArea"] label,
+    div[data-testid="stSelectbox"] label {
+        color: #14213d !important;
+        font-weight: 600;
+    }
+
+    /* Fix complaint text visibility */
+    div[data-testid="stTextArea"] textarea {
+        background-color: #262730 !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        caret-color: #ffffff !important;
+        border: 1px solid #d0d7e2;
+        border-radius: 10px;
+        opacity: 1 !important;
+    }
+
+    div[data-testid="stTextArea"] textarea::placeholder {
+        color: #c3c8d4 !important;
+        -webkit-text-fill-color: #c3c8d4 !important;
+        opacity: 1 !important;
+    }
+
+    div[data-testid="stTextArea"] textarea:focus {
+        border: 1px solid #ff4b4b !important;
+        box-shadow: 0 0 0 1px #ff4b4b !important;
+        outline: none !important;
+    }
+
     .result-card {
-        background: white;
+        background: #ffffff;
+        color: #14213d;
         border: 1px solid #e3e9f2;
         border-radius: 16px;
         padding: 22px;
@@ -62,12 +96,26 @@ st.markdown(
         font-weight: 800;
     }
 
-    .result-panel {
-        background: white;
-        border: 1px solid #e3e9f2;
-        border-radius: 16px;
-        padding: 22px;
-        margin-top: 16px;
+    .section-heading {
+        color: #14213d !important;
+        font-size: 1.25rem;
+        font-weight: 750;
+        margin-bottom: 10px;
+    }
+
+    .section-text {
+        color: #36445d !important;
+        font-size: 1rem;
+        line-height: 1.65;
+    }
+
+    /* Keep analysis text readable */
+    div[data-testid="stMarkdownContainer"] h3 {
+        color: #14213d !important;
+    }
+
+    div[data-testid="stMarkdownContainer"] p {
+        color: #36445d;
     }
     </style>
     """,
@@ -175,12 +223,14 @@ if submitted:
             st.divider()
             st.subheader("Analysis Results")
 
-            if not analysis["is_complaint"]:
+            if not analysis.get("is_complaint", False):
                 st.info(
                     "This text was not identified as a hotel complaint "
                     "or review. Please check the input."
                 )
-                st.write(analysis["explanation"])
+                st.write(
+                    analysis.get("explanation", "No explanation provided.")
+                )
 
             else:
                 priority = calculate_priority(analysis)
@@ -188,11 +238,13 @@ if submitted:
                 category_col, score_col, level_col = st.columns(3)
 
                 with category_col:
+                    category = html.escape(str(analysis["category"]))
+
                     st.markdown(
                         f"""
                         <div class="result-card">
                             <div class="card-label">Complaint Category</div>
-                            <div class="card-value">{analysis['category']}</div>
+                            <div class="card-value">{category}</div>
                         </div>
                         """,
                         unsafe_allow_html=True,
@@ -212,34 +264,54 @@ if submitted:
                     )
 
                 with level_col:
+                    level = html.escape(str(priority["level"]))
+                    color = html.escape(str(priority["color"]))
+                    background = html.escape(str(priority["background"]))
+                    description = html.escape(str(priority["description"]))
+
                     st.markdown(
                         f"""
                         <div class="result-card">
                             <div class="card-label">Priority Level</div>
                             <span class="priority-pill"
-                                style="
-                                    background:{priority['background']};
-                                    color:{priority['color']};">
-                                {priority['level']}
+                                style="background:{background};color:{color};">
+                                {level}
                             </span>
                             <p style="color:#53627c;margin-top:12px;">
-                                {priority['description']}
+                                {description}
                             </p>
                         </div>
                         """,
                         unsafe_allow_html=True,
                     )
 
-                st.markdown(
-                    '<div class="result-panel">',
-                    unsafe_allow_html=True,
-                )
-                st.markdown("### 📝 Complaint Summary")
-                st.write(analysis["summary"])
+                # Complaint summary and explanation
+                with st.container(border=True):
+                    st.markdown(
+                        '<div class="section-heading">'
+                        '📝 Complaint Summary</div>',
+                        unsafe_allow_html=True,
+                    )
+                    st.markdown(
+                        f'<div class="section-text">'
+                        f'{html.escape(str(analysis.get("summary", "No summary provided.")))}'
+                        f'</div>',
+                        unsafe_allow_html=True,
+                    )
 
-                st.markdown("### 💡 Analysis Explanation")
-                st.write(analysis["explanation"])
-                st.markdown("</div>", unsafe_allow_html=True)
+                    st.markdown("---")
+
+                    st.markdown(
+                        '<div class="section-heading">'
+                        '💡 Analysis Explanation</div>',
+                        unsafe_allow_html=True,
+                    )
+                    st.markdown(
+                        f'<div class="section-text">'
+                        f'{html.escape(str(analysis.get("explanation", "No explanation provided.")))}'
+                        f'</div>',
+                        unsafe_allow_html=True,
+                    )
 
                 with st.expander("View priority score breakdown"):
                     st.write(
@@ -251,42 +323,36 @@ if submitted:
                         st.write(f"- {item}")
 
                     st.progress(priority["score"] / 100)
+
                     st.caption(
                         "Prototype heuristic. Validate scores against "
                         "manually reviewed complaints before relying on them."
                     )
 
                 with st.expander("View extracted indicators"):
-                    st.write(f"Severity: {analysis['severity'].title()}")
+                    st.write(f'Severity: {analysis["severity"].title()}')
 
-                    st.write(
-                        "Safety concern: "
-                        + ("Yes" if analysis["safety_concern"] else "No")
-                    )
-                    st.write(
-                        "Urgent language: "
-                        + ("Yes" if analysis["urgent_language"] else "No")
-                    )
-                    st.write(
-                        "Financial impact: "
-                        + ("Yes" if analysis["financial_impact"] else "No")
-                    )
-                    st.write(
-                        "Multiple issues: "
-                        + ("Yes" if analysis["multiple_issues"] else "No")
-                    )
+                    indicators = [
+                        ("Safety concern", "safety_concern"),
+                        ("Urgent language", "urgent_language"),
+                        ("Financial impact", "financial_impact"),
+                        ("Multiple issues", "multiple_issues"),
+                    ]
 
-        except Exception:
-            st.error(
-                "Could not analyze the complaint. Check your Groq API key, "
-                "internet connection, model availability, and usage limits."
-            )
-            st.caption(
-                "If the issue continues, check the terminal for the "
-                "technical error details."
-            )
+                    for label, field in indicators:
+                        value = "Yes" if analysis.get(field) else "No"
+                        st.write(f"{label}: {value}")
+
+        except Exception as e:
+            st.error("Could not analyze the complaint.")
+            st.error(f"Error type: {type(e).__name__}")
+            st.code(str(e))
+
+            with st.expander("Technical details"):
+                st.exception(e)
 
 st.divider()
+
 st.caption(
     "HotelPulse is an AI internship prototype. Classifications and "
     "priority scores may be incorrect and require human review."
