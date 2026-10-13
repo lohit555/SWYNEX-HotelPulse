@@ -221,8 +221,10 @@ st.markdown(
         border-left: 4px solid #e8590c;
         border-radius: 10px;
         padding: 14px 16px;
-        color: #36445d;
+        color: #111827;
+        font-weight: 800;
         line-height: 1.55;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
     }
 
     </style>
