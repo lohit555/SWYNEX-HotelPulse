@@ -74,6 +74,16 @@ st.markdown(
     .brand-hotel { color: #102a54; }
     .brand-pulse { color: #d9480f; }
 
+    .brand-subheading {
+        color: #111827;
+        font-size: 1.05rem;
+        font-weight: 800;
+        letter-spacing: 0.01rem;
+        text-align: center;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+        margin: -2px 0 32px;
+    }
+
     .main-title {
         color: #14213d;
         font-size: 2.35rem;
@@ -471,6 +481,11 @@ def render_results(feedback: str, analysis: dict, priority: dict) -> None:
 st.markdown(
     '<div class="brand-lockup"><span class="brand-icon">🏨</span>'
     '<span class="brand-hotel">Hotel</span><span class="brand-pulse">Pulse</span></div>',
+    unsafe_allow_html=True,
+)
+
+st.markdown(
+    '<div class="brand-subheading">AI-Powered Complaint Classification &amp; Prioritization</div>',
     unsafe_allow_html=True,
 )
 
