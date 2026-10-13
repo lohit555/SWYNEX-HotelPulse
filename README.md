@@ -5,8 +5,8 @@
 HotelPulse is an AI-powered prototype that helps hotel customer-support teams classify guest complaints and prioritize issues requiring attention.
 
 Internship: Swynex Technologies
-Task 1 - AI Problem Design (Completed)
-Task 2 - Model or API Integration (Completed)
+- Task 1 - AI Problem Design (Completed)
+- Task 2 - Model or API Integration (Completed)
 
 ## 1. Problem Statement
 
@@ -41,7 +41,7 @@ Dataset: https://www.kaggle.com/datasets/jiashenliu/515k-hotel-reviews-data-in-e
 
 This dataset contains approximately 515,000 hotel reviews, including positive and negative review text and reviewer ratings.
 
-A manageable subset will be used for the prototype. Since the dataset does not provide verified complaint-category labels, a smaller sample will be manually labeled for evaluation. Hotel reviews will serve as proxies for complaints, not actual hotel support tickets.
+A manageable subset is planned for Task 3 evaluation. The current Task 2 prototype uses manually entered and sample guest-feedback inputs. Since the dataset does not provide verified complaint-category labels, a smaller sample will be manually labeled for evaluation. Hotel reviews will serve as proxies for complaints, not actual hotel support tickets.
 
 ## 5. Proposed Approach
 
@@ -73,7 +73,7 @@ Performance results will be reported after testing.
 
 - Correctly identifies relevant complaint categories.
 - Produces valid and explainable priority scores.
-- Allows staff to view and sort complaints.
+- Allows staff to review individual analyses and priority recommendations.
 - Demonstrates measurable classification performance on labeled test examples.
 
 ## 9. Task 2 Prototype
@@ -91,12 +91,12 @@ documented scoring rubric to calculate the priority score. The app includes:
 
 ### Tech Stack
 
-- **Python** — application logic and priority-scoring rubric.
-- **Streamlit** — interactive web interface.
-- **Groq API** — structured AI classification of guest feedback.
-- **openai/gpt-oss-120b** — model used through the Groq API.
-- **python-dotenv** — local environment-variable and API-key loading.
-- **HTML/CSS** — custom dashboard styling and priority gauge presentation.
+- Python - application logic and priority-scoring rubric.
+- Streamlit - interactive web interface.
+- Groq API - structured AI classification of guest feedback.
+- openai/gpt-oss-120b - model used through the Groq API.
+- python-dotenv - local environment-variable and API-key loading.
+- HTML/CSS - custom dashboard styling and priority gauge presentation.
 
 ### File Structure
 
@@ -133,9 +133,10 @@ placeholder.
 - Category: `Noise`
 - Likely severity: `serious`
 - Priority: `High` (60/100)
-- Summary: Construction noise disrupted the guest's sleep.
 - Recommended next step: Assign to the duty manager for prompt review and
   guest follow-up.
+- Summary: Construction noise disrupted the guest's sleep.
+- Analysis explanation: The AI identified overnight construction noise as a serious comfort issue, classifying it as a High-priority Noise complaint with no safety, urgency, financial, or multiple-issue indicators.
 
 AI output can vary slightly. Priority is a decision-support recommendation,
 not an automated final decision.
