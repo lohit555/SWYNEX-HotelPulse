@@ -38,8 +38,8 @@ st.markdown(
     <style>
     .stApp {
         background:
-            linear-gradient(rgba(247, 249, 252, 0.88), rgba(247, 249, 252, 0.91)),
-            url("{background_image}") center / cover fixed;
+            linear-gradient(rgba(247, 249, 252, 0.52), rgba(247, 249, 252, 0.62)),
+            url("__BACKGROUND_IMAGE__") center / cover fixed;
         color: #14213d;
     }
 
@@ -80,14 +80,7 @@ st.markdown(
         opacity: 1 !important;
     }
 
-    div[data-testid="stFormSubmitButton"] {
-        display: flex;
-        justify-content: center;
-        margin-top: 8px;
-    }
-
     div[data-testid="stFormSubmitButton"] button {
-        width: 190px;
         font-weight: 800;
     }
 
@@ -194,7 +187,7 @@ st.markdown(
     }
 
     </style>
-    """,
+    """.replace("__BACKGROUND_IMAGE__", background_image),
     unsafe_allow_html=True,
 )
 
@@ -532,10 +525,13 @@ with st.form("complaint_form"):
         ),
     )
 
-    submitted = st.form_submit_button(
-        "Analyze",
-        type="primary",
-    )
+    _, button_col, _ = st.columns([4, 2, 4])
+    with button_col:
+        submitted = st.form_submit_button(
+            "Analyze",
+            type="primary",
+            use_container_width=True,
+        )
 
 
 # -------------------- Analysis Results --------------------
