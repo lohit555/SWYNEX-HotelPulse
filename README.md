@@ -89,7 +89,7 @@ documented scoring rubric to calculate the priority score. The app includes:
 - A five-item in-session recent-analysis queue.
 - A hotel-lobby visual background with high-contrast interface controls.
 
-### Tech Stack
+## 10. Tech Stack
 
 - Python - application logic and priority-scoring rubric.
 - Streamlit - interactive web interface.
@@ -98,7 +98,7 @@ documented scoring rubric to calculate the priority score. The app includes:
 - python-dotenv - local environment-variable and API-key loading.
 - HTML/CSS - custom dashboard styling and priority gauge presentation.
 
-### File Structure
+## 11. File Structure
 
 ```text
 SWYNEX-HotelPulse/
