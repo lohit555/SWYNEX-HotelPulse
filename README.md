@@ -86,7 +86,7 @@ documented scoring rubric to calculate the priority score. The app includes:
 - A 0-100 priority gauge with a score breakdown.
 - A recommended next step based on transparent rules.
 - A five-item in-session recent-analysis queue.
-- JSON export of each result for review or evaluation.
+- A hotel-lobby visual background with high-contrast interface controls.
 
 ### Run locally
 

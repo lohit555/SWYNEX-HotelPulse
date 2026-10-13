@@ -1,6 +1,7 @@
 import html
-import json
+import base64
 from datetime import datetime
+from pathlib import Path
 
 import streamlit as st
 import streamlit.components.v1 as components
@@ -12,6 +13,15 @@ from analyzer import (
 )
 
 MAX_HISTORY_ITEMS = 5
+BACKGROUND_IMAGE = Path(__file__).parent / "assets" / "hotel-lobby-background.png"
+
+
+@st.cache_data
+def hotel_background_data_uri() -> str:
+    """Load the local visual asset once for use in the app stylesheet."""
+
+    encoded = base64.b64encode(BACKGROUND_IMAGE.read_bytes()).decode("ascii")
+    return f"data:image/png;base64,{encoded}"
 
 st.set_page_config(
     page_title="HotelPulse | Complaint Analyzer",
@@ -19,13 +29,17 @@ st.set_page_config(
     layout="wide",
 )
 
+background_image = hotel_background_data_uri()
+
 # -------------------- Styling --------------------
 
 st.markdown(
     """
     <style>
     .stApp {
-        background: #f7f9fc;
+        background:
+            linear-gradient(rgba(247, 249, 252, 0.88), rgba(247, 249, 252, 0.91)),
+            url("{background_image}") center / cover fixed;
         color: #14213d;
     }
 
@@ -45,7 +59,15 @@ st.markdown(
     div[data-testid="stTextArea"] label,
     div[data-testid="stSelectbox"] label {
         color: #14213d !important;
-        font-weight: 600;
+        font-weight: 800;
+        font-size: 0.95rem;
+    }
+
+    div[data-testid="stSelectbox"],
+    div[data-testid="stTextArea"] {
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     div[data-testid="stTextArea"] textarea {
@@ -56,6 +78,17 @@ st.markdown(
         border: 1px solid #d0d7e2;
         border-radius: 10px;
         opacity: 1 !important;
+    }
+
+    div[data-testid="stFormSubmitButton"] {
+        display: flex;
+        justify-content: center;
+        margin-top: 8px;
+    }
+
+    div[data-testid="stFormSubmitButton"] button {
+        width: 190px;
+        font-weight: 800;
     }
 
     div[data-testid="stTextArea"] textarea::placeholder {
@@ -160,16 +193,6 @@ st.markdown(
         line-height: 1.55;
     }
 
-    .meta-pill {
-        display: inline-block;
-        background: #eef3f9;
-        color: #36445d;
-        border-radius: 999px;
-        padding: 5px 10px;
-        font-size: 0.82rem;
-        font-weight: 650;
-        margin: 0 6px 8px 0;
-    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -344,26 +367,6 @@ def suggested_action(analysis: dict, priority: dict) -> str:
     return "Add this to the operations queue and confirm the next available resolution step."
 
 
-def export_payload(feedback: str, analysis: dict, priority: dict) -> str:
-    """Create a portable record without any API credentials."""
-
-    return json.dumps(
-        {
-            "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
-            "guest_feedback": feedback,
-            "analysis": analysis,
-            "priority": {
-                "score": priority["score"],
-                "level": priority["level"],
-                "breakdown": priority["breakdown"],
-            },
-            "recommended_next_step": suggested_action(analysis, priority),
-            "prototype_notice": "AI-assisted result. A staff member must review before taking action.",
-        },
-        indent=2,
-    )
-
-
 def render_results(feedback: str, analysis: dict, priority: dict) -> None:
     """Render a consistent, review-friendly analysis record."""
 
@@ -374,13 +377,6 @@ def render_results(feedback: str, analysis: dict, priority: dict) -> None:
         st.success("No actionable issue was detected. This feedback is classified as Positive.")
     else:
         st.info("AI-assisted triage only: a staff member should review this result before acting.")
-
-    st.markdown(
-        f'<span class="meta-pill">Category: {html.escape(str(analysis["category"]))}</span>'
-        f'<span class="meta-pill">Severity: {html.escape(analysis["severity"].title())}</span>'
-        f'<span class="meta-pill">Priority: {html.escape(priority["level"])}</span>',
-        unsafe_allow_html=True,
-    )
 
     category_col, gauge_col = st.columns([1, 1.6])
     with category_col:
@@ -435,15 +431,6 @@ def render_results(feedback: str, analysis: dict, priority: dict) -> None:
             ("Multiple issues", "multiple_issues"),
         ]:
             st.write(f"{label}: {'Yes' if analysis.get(field) else 'No'}")
-
-    st.download_button(
-        "Download analysis as JSON",
-        data=export_payload(feedback, analysis, priority),
-        file_name="hotelpulse-analysis.json",
-        mime="application/json",
-        use_container_width=True,
-    )
-
 
 # -------------------- Sidebar --------------------
 
@@ -546,9 +533,8 @@ with st.form("complaint_form"):
     )
 
     submitted = st.form_submit_button(
-        "🔎 Analyze Feedback",
+        "Analyze",
         type="primary",
-        use_container_width=True,
     )
 
 
