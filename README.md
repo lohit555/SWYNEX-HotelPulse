@@ -89,6 +89,29 @@ documented scoring rubric to calculate the priority score. The app includes:
 - A five-item in-session recent-analysis queue.
 - A hotel-lobby visual background with high-contrast interface controls.
 
+### Tech Stack
+
+- **Python** — application logic and priority-scoring rubric.
+- **Streamlit** — interactive web interface.
+- **Groq API** — structured AI classification of guest feedback.
+- **openai/gpt-oss-120b** — model used through the Groq API.
+- **python-dotenv** — local environment-variable and API-key loading.
+- **HTML/CSS** — custom dashboard styling and priority gauge presentation.
+
+### File Structure
+
+```text
+SWYNEX-HotelPulse/
+├── analyzer.py                     # Groq analysis and priority scoring logic
+├── dashboard.py                    # Streamlit web application
+├── assets/
+│   └── hotel-lobby-background.png  # Dashboard background image
+├── requirements.txt                # Python dependencies
+├── .env.example                    # API-key placeholder only
+├── .gitignore                      # Excludes .env and local virtual environments
+└── README.md                       # Project and Task 2 documentation
+```
+
 ### Run locally
 
 1. Create and activate a Python virtual environment.
