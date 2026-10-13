@@ -51,8 +51,10 @@ st.markdown(
     }
 
     .subtitle {
-        color: #53627c;
+        color: #111827;
         font-size: 1rem;
+        font-weight: 750;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
         margin: 4px 0 24px 0;
     }
 
