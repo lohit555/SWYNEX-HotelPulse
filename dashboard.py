@@ -27,6 +27,7 @@ st.set_page_config(
     page_title="HotelPulse | Complaint Analyzer",
     page_icon="🏨",
     layout="wide",
+    initial_sidebar_state="collapsed",
 )
 
 background_image = hotel_background_data_uri()
@@ -42,6 +43,36 @@ st.markdown(
             url("__BACKGROUND_IMAGE__") center / cover fixed;
         color: #14213d;
     }
+
+    header[data-testid="stHeader"],
+    [data-testid="stSidebar"],
+    [data-testid="stSidebarCollapsedControl"] {
+        display: none !important;
+    }
+
+    .block-container {
+        padding-top: 3.25rem !important;
+        max-width: 1380px;
+    }
+
+    .brand-lockup {
+        text-align: center;
+        margin: 0 0 10px;
+        font-size: 3.2rem;
+        font-weight: 900;
+        letter-spacing: -0.08rem;
+        line-height: 1.1;
+        text-shadow: 0 2px 5px rgba(255, 255, 255, 0.75);
+    }
+
+    .brand-icon {
+        font-size: 2.7rem;
+        margin-right: 10px;
+        vertical-align: 5px;
+    }
+
+    .brand-hotel { color: #102a54; }
+    .brand-pulse { color: #d9480f; }
 
     .main-title {
         color: #14213d;
@@ -433,52 +464,15 @@ def render_results(feedback: str, analysis: dict, priority: dict) -> None:
         ]:
             st.write(f"{label}: {'Yes' if analysis.get(field) else 'No'}")
 
-# -------------------- Sidebar --------------------
-
-with st.sidebar:
-    st.markdown("## 🏨 HotelPulse")
-    st.caption("AI-Powered Complaint Classification & Prioritization")
-    st.divider()
-
-    st.markdown("### Priority guide")
-
-    for item in PRIORITY_LEVELS:
-        st.markdown(
-            f"""
-            <div style="
-                background:{item['background']};
-                color:{item['color']};
-                padding:10px 12px;
-                border-radius:9px;
-                margin-bottom:8px;
-                font-weight:700;">
-                {item['name']} · {item['minimum']}-{item['maximum']}
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-    st.divider()
-    st.caption("Privacy reminder: do not enter names, booking references, or payment details.")
-
-    if st.session_state.get("recent_analyses"):
-        st.markdown("### Recent analyses")
-        for item in st.session_state.recent_analyses:
-            if st.button(
-                f"{item['priority']['score']} · {item['analysis']['category']}",
-                key=f"history_{item['id']}",
-                help=item["feedback"],
-                use_container_width=True,
-            ):
-                st.session_state.current_result = item
-
-
 # -------------------- Main Dashboard --------------------
 
 st.markdown(
-    '<div class="main-title">Analyze Guest Feedback</div>',
+    '<div class="brand-lockup"><span class="brand-icon">🏨</span>'
+    '<span class="brand-hotel">Hotel</span><span class="brand-pulse">Pulse</span></div>',
     unsafe_allow_html=True,
 )
+
+st.markdown('<div class="main-title">Analyze Guest Feedback</div>', unsafe_allow_html=True)
 
 st.markdown(
     '<div class="subtitle">'
@@ -540,6 +534,8 @@ with st.form("complaint_form"):
             type="primary",
             use_container_width=True,
         )
+
+    st.caption("Privacy reminder: do not enter names, booking references, or payment details.")
 
 
 # -------------------- Analysis Results --------------------
