@@ -147,7 +147,8 @@ st.markdown(
 
     div[data-testid="stExpander"] div[data-testid="stMarkdownContainer"] p,
     div[data-testid="stExpander"] li {
-        color: #36445d !important;
+        color: #111827 !important;
+        font-weight: 700;
     }
 
     .category-card {
@@ -158,16 +159,19 @@ st.markdown(
     }
 
     .section-heading {
-        color: #14213d !important;
+        color: #0b0f19 !important;
         font-size: 1.25rem;
-        font-weight: 750;
+        font-weight: 800;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
         margin-bottom: 10px;
     }
 
     .section-text {
-        color: #36445d !important;
+        color: #111827 !important;
         font-size: 1rem;
+        font-weight: 700;
         line-height: 1.65;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
         overflow-wrap: anywhere;
     }
 
@@ -176,7 +180,9 @@ st.markdown(
     }
 
     div[data-testid="stMarkdownContainer"] p {
-        color: #36445d;
+        color: #111827;
+        font-weight: 700;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
     }
 
     .action-card {
