@@ -1,4 +1,6 @@
 import html
+import json
+from datetime import datetime
 
 import streamlit as st
 import streamlit.components.v1 as components
@@ -8,6 +10,8 @@ from analyzer import (
     calculate_priority,
     PRIORITY_LEVELS,
 )
+
+MAX_HISTORY_ITEMS = 5
 
 st.set_page_config(
     page_title="HotelPulse | Complaint Analyzer",
@@ -145,6 +149,26 @@ st.markdown(
 
     div[data-testid="stMarkdownContainer"] p {
         color: #36445d;
+    }
+
+    .action-card {
+        background: #fff8e7;
+        border-left: 4px solid #e8590c;
+        border-radius: 10px;
+        padding: 14px 16px;
+        color: #36445d;
+        line-height: 1.55;
+    }
+
+    .meta-pill {
+        display: inline-block;
+        background: #eef3f9;
+        color: #36445d;
+        border-radius: 999px;
+        padding: 5px 10px;
+        font-size: 0.82rem;
+        font-weight: 650;
+        margin: 0 6px 8px 0;
     }
     </style>
     """,
@@ -306,6 +330,121 @@ def render_priority_gauge(score: int, level: str, color: str) -> None:
     )
 
 
+def suggested_action(analysis: dict, priority: dict) -> str:
+    """Return a human-review recommendation from transparent rules."""
+
+    if analysis["category"] == "Positive":
+        return "No follow-up is required. You may share the positive feedback with the team."
+    if analysis.get("safety_concern"):
+        return "Escalate to the duty manager now and arrange an immediate safety check."
+    if analysis.get("financial_impact"):
+        return "Ask the front-desk or billing team to review the charge and update the guest promptly."
+    if priority["level"] in {"High", "Critical"}:
+        return "Assign this to the duty manager for prompt review and guest follow-up."
+    return "Add this to the operations queue and confirm the next available resolution step."
+
+
+def export_payload(feedback: str, analysis: dict, priority: dict) -> str:
+    """Create a portable record without any API credentials."""
+
+    return json.dumps(
+        {
+            "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+            "guest_feedback": feedback,
+            "analysis": analysis,
+            "priority": {
+                "score": priority["score"],
+                "level": priority["level"],
+                "breakdown": priority["breakdown"],
+            },
+            "recommended_next_step": suggested_action(analysis, priority),
+            "prototype_notice": "AI-assisted result. A staff member must review before taking action.",
+        },
+        indent=2,
+    )
+
+
+def render_results(feedback: str, analysis: dict, priority: dict) -> None:
+    """Render a consistent, review-friendly analysis record."""
+
+    st.divider()
+    st.subheader("Analysis Results")
+
+    if analysis["category"] == "Positive":
+        st.success("No actionable issue was detected. This feedback is classified as Positive.")
+    else:
+        st.info("AI-assisted triage only: a staff member should review this result before acting.")
+
+    st.markdown(
+        f'<span class="meta-pill">Category: {html.escape(str(analysis["category"]))}</span>'
+        f'<span class="meta-pill">Severity: {html.escape(analysis["severity"].title())}</span>'
+        f'<span class="meta-pill">Priority: {html.escape(priority["level"])}</span>',
+        unsafe_allow_html=True,
+    )
+
+    category_col, gauge_col = st.columns([1, 1.6])
+    with category_col:
+        category = html.escape(str(analysis["category"]))
+        st.markdown(
+            f'<div class="result-card category-card"><div class="card-label">Feedback Category</div>'
+            f'<div class="card-value">{category}</div></div>',
+            unsafe_allow_html=True,
+        )
+    with gauge_col:
+        render_priority_gauge(priority["score"], priority["level"], priority["color"])
+
+    st.markdown('<div class="section-heading">Recommended next step</div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="action-card">{html.escape(suggested_action(analysis, priority))}</div>',
+        unsafe_allow_html=True,
+    )
+
+    with st.container(border=True):
+        st.markdown('<div class="section-heading">📝 Feedback Summary</div>', unsafe_allow_html=True)
+        st.markdown(
+            f'<div class="section-text">{html.escape(str(analysis.get("summary", "No summary provided.")))}</div>',
+            unsafe_allow_html=True,
+        )
+        st.markdown("---")
+        st.markdown('<div class="section-heading">💡 Analysis Explanation</div>', unsafe_allow_html=True)
+        st.markdown(
+            f'<div class="section-text">{html.escape(str(analysis.get("explanation", "No explanation provided.")))}</div>',
+            unsafe_allow_html=True,
+        )
+
+    with st.expander("View priority score breakdown"):
+        st.write("The score uses a fixed rubric applied to indicators extracted by the AI.")
+        for item in priority["breakdown"]:
+            st.write(f"- {item}")
+        bar_color = html.escape(str(priority["color"]))
+        bar_width = max(0, min(100, int(priority["score"])))
+        st.markdown(
+            f'<div style="background:#e8edf4;border-radius:999px;height:10px;overflow:hidden;margin:10px 0;">'
+            f'<div style="background:{bar_color};width:{bar_width}%;height:100%;"></div></div>',
+            unsafe_allow_html=True,
+        )
+        st.caption("Prototype heuristic. Validate scores against manually reviewed feedback before relying on them.")
+
+    with st.expander("View extracted indicators"):
+        st.write(f'Severity: {analysis["severity"].title()}')
+        st.write("Identified issue: " + ("Yes" if analysis["is_complaint"] else "No"))
+        for label, field in [
+            ("Safety concern", "safety_concern"),
+            ("Urgent language", "urgent_language"),
+            ("Financial impact", "financial_impact"),
+            ("Multiple issues", "multiple_issues"),
+        ]:
+            st.write(f"{label}: {'Yes' if analysis.get(field) else 'No'}")
+
+    st.download_button(
+        "Download analysis as JSON",
+        data=export_payload(feedback, analysis, priority),
+        file_name="hotelpulse-analysis.json",
+        mime="application/json",
+        use_container_width=True,
+    )
+
+
 # -------------------- Sidebar --------------------
 
 with st.sidebar:
@@ -330,6 +469,20 @@ with st.sidebar:
             """,
             unsafe_allow_html=True,
         )
+
+    st.divider()
+    st.caption("Privacy reminder: do not enter names, booking references, or payment details.")
+
+    if st.session_state.get("recent_analyses"):
+        st.markdown("### Recent analyses")
+        for item in st.session_state.recent_analyses:
+            if st.button(
+                f"{item['priority']['score']} · {item['analysis']['category']}",
+                key=f"history_{item['id']}",
+                help=item["feedback"],
+                use_container_width=True,
+            ):
+                st.session_state.current_result = item
 
 
 # -------------------- Main Dashboard --------------------
@@ -411,123 +564,21 @@ if submitted:
                 analysis = analyze_complaint(complaint.strip())
                 priority = calculate_priority(analysis)
 
-            st.divider()
-            st.subheader("Analysis Results")
-
-            if analysis["category"] == "Positive":
-                st.success(
-                    "No actionable issue was detected. "
-                    "This feedback is classified as Positive."
-                )
-            else:
-                st.info(
-                    "A potential issue was detected. Even minor issues "
-                    "are categorized and assigned at least Low priority."
-                )
-
-            category_col, gauge_col = st.columns([1, 1.6])
-
-            with category_col:
-                category = html.escape(str(analysis["category"]))
-
-                st.markdown(
-                    f"""
-                    <div class="result-card category-card">
-                        <div class="card-label">Feedback Category</div>
-                        <div class="card-value">{category}</div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-
-            with gauge_col:
-                render_priority_gauge(
-                    priority["score"],
-                    priority["level"],
-                    priority["color"],
-                )
-
-            with st.container(border=True):
-                st.markdown(
-                    '<div class="section-heading">'
-                    '📝 Feedback Summary</div>',
-                    unsafe_allow_html=True,
-                )
-
-                summary = html.escape(
-                    str(analysis.get("summary", "No summary provided."))
-                )
-                st.markdown(
-                    f'<div class="section-text">{summary}</div>',
-                    unsafe_allow_html=True,
-                )
-
-                st.markdown("---")
-
-                st.markdown(
-                    '<div class="section-heading">'
-                    '💡 Analysis Explanation</div>',
-                    unsafe_allow_html=True,
-                )
-
-                explanation = html.escape(
-                    str(
-                        analysis.get(
-                            "explanation",
-                            "No explanation provided.",
-                        )
-                    )
-                )
-                st.markdown(
-                    f'<div class="section-text">{explanation}</div>',
-                    unsafe_allow_html=True,
-                )
-
-            with st.expander("View priority score breakdown"):
-                st.write(
-                    "The score uses a fixed rubric applied to the "
-                    "indicators extracted by the AI."
-                )
-
-                for item in priority["breakdown"]:
-                    st.write(f"- {item}")
-
-                bar_color = html.escape(str(priority["color"]))
-                bar_width = max(0, min(100, int(priority["score"])))
-                st.markdown(
-                    f"""
-                    <div style="background:#e8edf4;border-radius:999px;
-                                height:10px;overflow:hidden;margin:10px 0;">
-                        <div style="background:{bar_color};width:{bar_width}%;
-                                    height:100%;"></div>
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-
-                st.caption(
-                    "Prototype heuristic. Validate scores against "
-                    "manually reviewed feedback before relying on them."
-                )
-
-            with st.expander("View extracted indicators"):
-                st.write(f'Severity: {analysis["severity"].title()}')
-                st.write(
-                    "Identified issue: "
-                    + ("Yes" if analysis["is_complaint"] else "No")
-                )
-
-                indicators = [
-                    ("Safety concern", "safety_concern"),
-                    ("Urgent language", "urgent_language"),
-                    ("Financial impact", "financial_impact"),
-                    ("Multiple issues", "multiple_issues"),
-                ]
-
-                for label, field in indicators:
-                    value = "Yes" if analysis.get(field) else "No"
-                    st.write(f"{label}: {value}")
+            result = {
+                "id": datetime.now().isoformat(),
+                "feedback": complaint.strip(),
+                "analysis": analysis,
+                "priority": priority,
+            }
+            st.session_state.current_result = result
+            history = st.session_state.get("recent_analyses", [])
+            st.session_state.recent_analyses = [result, *history][:MAX_HISTORY_ITEMS]
 
         except Exception as e:
             st.error("Could not analyze the guest feedback.")
-            st.code(f"{type(e).__name__}: {e}")
+            st.caption("Check your local Groq configuration and connection, then try again.")
+
+
+if st.session_state.get("current_result"):
+    current = st.session_state.current_result
+    render_results(current["feedback"], current["analysis"], current["priority"])

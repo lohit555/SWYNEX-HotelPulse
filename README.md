@@ -5,7 +5,7 @@
 HotelPulse is an AI-powered prototype that helps hotel customer-support teams classify guest complaints and prioritize issues requiring attention.
 
 Internship: Swynex Technologies  
-Status: Task 1 - AI Use Case Definition
+Status: Task 2 - Working prototype
 
 ## 1. Problem Statement
 
@@ -74,3 +74,44 @@ Performance results will be reported after testing.
 - Produces valid and explainable priority scores.
 - Allows staff to view and sort complaints.
 - Demonstrates measurable classification performance on labeled test examples.
+
+## 9. Task 2 Prototype
+
+The working prototype is a Streamlit web app that sends guest feedback to the
+Groq API for structured AI classification. It then applies a transparent,
+documented scoring rubric to calculate the priority score. The app includes:
+
+- Sample guest reviews for a quick demonstration.
+- AI-generated category, summary, explanation, and risk indicators.
+- A 0-100 priority gauge with a score breakdown.
+- A recommended next step based on transparent rules.
+- A five-item in-session recent-analysis queue.
+- JSON export of each result for review or evaluation.
+
+### Run locally
+
+1. Create and activate a Python virtual environment.
+2. Install dependencies: `pip install -r requirements.txt`
+3. Copy `.env.example` to `.env` and add a valid `GROQ_API_KEY` locally.
+4. Run: `streamlit run dashboard.py`
+
+Never commit `.env` or an API key. The included `.env.example` contains only a
+placeholder.
+
+### Example input and output
+
+**Input**
+
+> Loud construction noise outside my room kept me awake until 2 AM.
+
+**Expected prototype output**
+
+- Category: `Noise`
+- Likely severity: `serious`
+- Priority: `High` (60/100)
+- Summary: Construction noise disrupted the guest's sleep.
+- Recommended next step: Assign to the duty manager for prompt review and
+  guest follow-up.
+
+AI output can vary slightly. Priority is a decision-support recommendation,
+not an automated final decision.
