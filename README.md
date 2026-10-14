@@ -7,6 +7,7 @@ HotelPulse is an AI-powered prototype that helps hotel customer-support teams cl
 Internship: Swynex Technologies
 - Task 1 - AI Problem Design (Completed)
 - Task 2 - Model or API Integration (Completed)
+- Task 3 - Intelligent Feature (To Do)
 
 ## 1. Problem Statement
 
