@@ -1,0 +1,170 @@
+[
+  {
+    "id": 1,
+    "text": "The hotel was beautiful, the staff were friendly, and breakfast was excellent.",
+    "expected_category": "Positive",
+    "expected_is_complaint": false,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 2,
+    "text": "We loved our stay and the room was spacious and comfortable.",
+    "expected_category": "Positive",
+    "expected_is_complaint": false,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 3,
+    "text": "The staff were wonderful and the location was perfect.",
+    "expected_category": "Positive",
+    "expected_is_complaint": false,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 4,
+    "text": "The bathroom floor had some dust, but overall the stay was pleasant.",
+    "expected_category": "Cleanliness",
+    "expected_is_complaint": true,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 5,
+    "text": "There was mould around the shower and the towels were stained.",
+    "expected_category": "Cleanliness",
+    "expected_is_complaint": true,
+    "expected_severity": "moderate"
+  },
+  {
+    "id": 6,
+    "text": "The bathroom was filthy and had a strong sewage smell that made the room unusable.",
+    "expected_category": "Cleanliness",
+    "expected_is_complaint": true,
+    "expected_severity": "serious"
+  },
+  {
+    "id": 7,
+    "text": "Check-in took fifteen minutes longer than expected, although the receptionist was polite.",
+    "expected_category": "Staff/Service",
+    "expected_is_complaint": true,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 8,
+    "text": "Room service never answered the phone, and we waited two hours for our order.",
+    "expected_category": "Staff/Service",
+    "expected_is_complaint": true,
+    "expected_severity": "moderate"
+  },
+  {
+    "id": 9,
+    "text": "The receptionist shouted at us and refused to help resolve a serious booking mistake.",
+    "expected_category": "Staff/Service",
+    "expected_is_complaint": true,
+    "expected_severity": "serious"
+  },
+  {
+    "id": 10,
+    "text": "The air conditioner was a little noisy and did not cool the room very well.",
+    "expected_category": "Room/Facilities",
+    "expected_is_complaint": true,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 11,
+    "text": "The shower was broken and there was no hot water throughout our stay.",
+    "expected_category": "Room/Facilities",
+    "expected_is_complaint": true,
+    "expected_severity": "moderate"
+  },
+  {
+    "id": 12,
+    "text": "A ceiling panel fell beside the bed and exposed damaged electrical wiring.",
+    "expected_category": "Room/Facilities",
+    "expected_is_complaint": true,
+    "expected_severity": "severe"
+  },
+  {
+    "id": 13,
+    "text": "The coffee was cold at breakfast, but the rest of the meal was good.",
+    "expected_category": "Food/Dining",
+    "expected_is_complaint": true,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 14,
+    "text": "Several dishes at the buffet were undercooked and tasted unpleasant.",
+    "expected_category": "Food/Dining",
+    "expected_is_complaint": true,
+    "expected_severity": "moderate"
+  },
+  {
+    "id": 15,
+    "text": "The chicken was raw in the middle and caused us to worry about food safety.",
+    "expected_category": "Food/Dining",
+    "expected_is_complaint": true,
+    "expected_severity": "serious"
+  },
+  {
+    "id": 16,
+    "text": "The hotel was farther from the train station than the listing suggested.",
+    "expected_category": "Location",
+    "expected_is_complaint": true,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 17,
+    "text": "The hotel was advertised as being near the conference centre, but it was a long and expensive journey away.",
+    "expected_category": "Location",
+    "expected_is_complaint": true,
+    "expected_severity": "moderate"
+  },
+  {
+    "id": 18,
+    "text": "We could hear occasional traffic from the street at night.",
+    "expected_category": "Noise",
+    "expected_is_complaint": true,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 19,
+    "text": "Loud music from the neighbouring room kept us awake until three in the morning.",
+    "expected_category": "Noise",
+    "expected_is_complaint": true,
+    "expected_severity": "moderate"
+  },
+  {
+    "id": 20,
+    "text": "Construction noise began at six every morning and made it impossible to sleep during our week-long stay.",
+    "expected_category": "Noise",
+    "expected_is_complaint": true,
+    "expected_severity": "serious"
+  },
+  {
+    "id": 21,
+    "text": "The minibar charge was higher than expected, and the bill was not clearly itemized.",
+    "expected_category": "Value/Billing",
+    "expected_is_complaint": true,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 22,
+    "text": "I was charged twice for the same booking and have not received the promised refund.",
+    "expected_category": "Value/Billing",
+    "expected_is_complaint": true,
+    "expected_severity": "moderate"
+  },
+  {
+    "id": 23,
+    "text": "The hotel charged my card for a reservation that it cancelled, and the billing team has ignored repeated refund requests.",
+    "expected_category": "Value/Billing",
+    "expected_is_complaint": true,
+    "expected_severity": "serious"
+  },
+  {
+    "id": 24,
+    "text": "Write a poem about the moon and the stars.",
+    "expected_category": "Positive",
+    "expected_is_complaint": false,
+    "expected_severity": "minor"
+  }
+]
