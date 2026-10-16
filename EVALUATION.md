@@ -1,3 +1,4 @@
+
 # HotelPulse Model Evaluation
 
 ## 1. Objective
@@ -13,67 +14,52 @@ Each example contains an expected category, complaint flag, and severity label. 
 The predicted outputs are compared against the manually assigned expected labels.
 
 The evaluation measures:
-- **Category accuracy:** Percentage of successful predictions whose category matches the expected category.
-- **Complaint-detection accuracy:** Percentage whose complaint flag matches the expected flag.
-- **Severity accuracy:** Percentage whose predicted severity exactly matches the expected severity.
+
+- **Category accuracy:** Percentage of predictions whose category matches the expected category.
+- **Complaint-detection accuracy:** Percentage of predictions whose complaint flag matches the expected flag.
+- **Severity accuracy:** Percentage of predictions whose severity exactly matches the expected severity.
 
 These results measure agreement with this initial test set and should not be interpreted as proof of production readiness.
 
 ## 3. Results
 
-| Metric | Correct | Total | Accuracy |
-|---|---:|---:|---:|
-| Category classification | 23 | 24 | 95.83% |
-| Complaint detection | 24 | 24 | 100.00% |
-| Severity classification | 14 | 24 | 58.33% |
+| Metric | Previous Baseline | Latest Result |
+|---|---:|---:|
+| Category classification | 23/24 (95.83%) | 24/24 (100.00%) |
+| Complaint detection | 24/24 (100.00%) | 24/24 (100.00%) |
+| Severity classification | 14/24 (58.33%) | 22/24 (91.67%) |
 
 All 24 model calls completed successfully, with no API failures.
 
-## 4. Observed Failure Cases
+### Results Summary
 
-### Case 1: Overlapping categories
+The updated model instructions improved severity accuracy from 58.33% to 91.67%, an increase of 33.34 percentage points. Category accuracy also improved from 95.83% to 100.00%, while complaint-detection accuracy remained at 100.00%.
 
-**Example:** The guest reported that the air conditioner was noisy and did not cool the room effectively.
+These improvements were observed on the same 24-example evaluation set. Further testing is required to determine whether the improvements generalize to new reviews.
 
-- Expected category: Room/Facilities
-- Predicted category: Noise
+## 4. Remaining Failure Cases
 
-**Observation:** The feedback contains both an equipment defect and a noise-related symptom. The model selected Noise rather than Room/Facilities.
+Two examples were incorrectly classified by severity in the latest evaluation.
 
-**Potential improvement:** Clarify how to choose the primary category when multiple aspects of a complaint overlap.
+### Case 1: Severity Underestimation or Overestimation — ID 10
 
-### Case 2: Severity overestimation
+- **Expected severity:** Minor
+- **Predicted severity:** Moderate
 
-**Example:** A guest reported waiting two hours for a room-service order.
+**Observation:** The model assigned a higher severity than the expected label.
 
-- Expected severity: Moderate
-- Predicted severity: Serious
+**Next step:** Review the original feedback and the model's explanation to determine whether the severity definitions or the expected label need further examination.
 
-**Observation:** The model assigned a higher severity than the initial expected label.
+### Case 2: Severity Overestimation — ID 11
 
-**Potential improvement:** Provide clearer severity definitions and examples for service delays, considering duration, impact, and whether the guest's basic needs were affected.
+- **Expected severity:** Moderate
+- **Predicted severity:** Serious
 
-### Case 3: Severity of physical hazards
+**Observation:** The model assigned a higher severity than the expected label.
 
-**Example:** A ceiling panel fell beside the bed and exposed damaged electrical wiring.
+**Next step:** Inspect the review text and model explanation, then determine whether the model is overestimating the impact of the complaint or whether the expected severity requires reconsideration.
 
-- Expected severity: Severe
-- Predicted severity: Serious
-
-**Observation:** The model recognized a serious issue but assigned a lower severity than expected.
-
-**Potential improvement:** Add explicit guidance for physical hazards and potential electrical safety risks. Safety-related complaints should receive prompt human review.
-
-### Case 4: Financial complaint severity
-
-**Example:** A guest reported being charged for a cancelled reservation and receiving no response to repeated refund requests.
-
-- Expected severity: Serious
-- Predicted severity: Moderate
-
-**Observation:** The model may have underestimated the impact of an unresolved financial complaint.
-
-**Potential improvement:** Define how duplicate charges, cancelled bookings, and repeated unsuccessful refund requests should influence severity.
+The exact review text and explanations for these two cases should be examined before making further prompt changes.
 
 ## 5. Limitations
 
@@ -82,17 +68,21 @@ All 24 model calls completed successfully, with no API failures.
 - Accuracy on this small, purpose-built test set may not generalize to real-world hotel reviews.
 - The test does not establish that the model's priority scores reliably predict actual operational urgency.
 - Additional examples are needed to assess performance across different wording, languages, complaint combinations, and severity levels.
+- The evaluation does not independently verify whether the model's classifications are appropriate for actual hotel operations.
 
 ## 6. Next Steps
 
-1. Review the severity definitions and refine the model instructions.
-2. Add more manually reviewed evaluation examples.
-3. Retest the model after changes using the same baseline examples.
-4. Compare results across categories and severity levels.
-5. Have hotel staff review high-priority or safety-related cases before taking action.
+1. Review the two remaining severity mismatches using their original feedback and model explanations.
+2. Expand the evaluation dataset with additional manually labelled examples.
+3. Retest the model using the existing baseline examples after any changes.
+4. Compare results across categories and severity levels to identify recurring errors.
+5. Assess performance on new examples that were not used to refine the model instructions.
+6. Have hotel staff review high-priority or safety-related cases before taking action.
 
 ## 7. Conclusion
 
-In this initial evaluation, HotelPulse achieved 95.83% category accuracy and 100.00% complaint-detection accuracy. Severity accuracy was lower at 58.33%, identifying severity assignment as the main area for further investigation.
+In the latest evaluation, HotelPulse achieved 100.00% category accuracy, 100.00% complaint-detection accuracy, and 91.67% severity accuracy across 24 manually labelled examples.
 
-The results are encouraging for an initial prototype, but the small test set and subjective labels limit the conclusions that can be drawn. Further evaluation and human review are necessary before using the system for operational decisions.
+Compared with the previous baseline, severity accuracy improved by 33.34 percentage points, while category accuracy increased by 4.17 percentage points.
+
+The results are encouraging for an initial prototype, but the small test set and subjective labels limit the conclusions that can be drawn. A larger evaluation set, further testing on unseen reviews, and human review of high-priority cases are necessary before using the system for operational decisions.
