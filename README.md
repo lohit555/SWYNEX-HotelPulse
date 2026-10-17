@@ -1,144 +1,143 @@
+# HotelPulse
 
-# 🏨 HotelPulse 
+### AI-Powered Complaint Classification & Prioritization
 
-HotelPulse is an AI-powered web application that analyzes hotel guest feedback, classifies complaints, and assigns severity and priority scores to help hotel support teams identify issues that may require attention.
+HotelPulse is an AI-powered prototype that helps hotel customer-support teams classify guest complaints and prioritize issues requiring attention.
 
-## Features
+Internship: Swynex Technologies
+- Task 1 - AI Problem Design (Completed)
+- Task 2 - Model or API Integration (Completed)
+- Task 3 - Intelligent Feature (To Do)
 
-- **Complaint classification:** Categorizes guest feedback into Positive, Cleanliness, Staff/Service, Room/Facilities, Food/Dining, Location, Noise, or Value/Billing.
-- **Severity assessment:** Classifies complaints by severity: minor, moderate, serious, or severe.
-- **Priority scoring:** Assigns a priority score from 0 to 100 and a corresponding priority level.
-- **Safety awareness:** Identifies potential safety concerns and considers them when prioritizing complaints.
-- **Interactive dashboard:** Provides a simple Streamlit interface for analyzing guest feedback.
-- **Model evaluation:** Evaluates predictions against a set of manually labelled examples and saves detailed results to a CSV file.
+## 1. Problem Statement
 
-## Tech Stack
+Hotels receive guest feedback about cleanliness, service, facilities, food, and other issues. Manually reviewing large volumes of feedback can be time-consuming.
 
-- Python
-- Streamlit
-- Groq API
-- Large language model: `openai/gpt-oss-120b`
-- JSON-based evaluation examples
-- pandas (for evaluation result analysis, if used by the evaluation script)
+HotelPulse aims to automate complaint classification and provide explainable priority scores to help staff review important issues first.
 
-## Project Structure
+## 2. Intended User
+
+Hotel customer-support staff and hotel operations teams who review guest feedback and decide which issues need attention.
+
+## 3. AI Use Case
+
+Primary task: Text classification - identify complaint categories from hotel review text.
+
+Supporting feature: Assign a priority score from 0 - 100 and a priority level (Low, Medium, High, or Critical).
+
+Initial categories include:
+- Cleanliness
+- Staff/Service
+- Room/Facilities
+- Food/Dining
+- Location
+- Noise
+- Value/Billing
+
+The system supports staff decision-making; human staff remain responsible for final decisions.
+
+## 4. Dataset
+
+Dataset: https://www.kaggle.com/datasets/jiashenliu/515k-hotel-reviews-data-in-europe
+
+This dataset contains approximately 515,000 hotel reviews, including positive and negative review text and reviewer ratings.
+
+A manageable subset is planned for Task 3 evaluation. The current Task 2 prototype uses manually entered and sample guest-feedback inputs. Since the dataset does not provide verified complaint-category labels, a smaller sample will be manually labeled for evaluation. Hotel reviews will serve as proxies for complaints, not actual hotel support tickets.
+
+## 5. Proposed Approach
+
+- Use an existing AI model/API to classify reviews into predefined categories.
+- Calculate priority scores using a documented rubric based on issue severity, safety implications, financial impact, urgency, and multiple or unresolved issues.
+- Display the categories, priority scores, and supporting explanations in a simple interface.
+- Allow staff to review and sort cases by priority.
+
+## 6. Constraints
+
+- Limited internship timeline and API usage budget.
+- Public reviews may not represent actual support tickets.
+- Model predictions and priority scores may be inaccurate.
+- Human review is required before taking action.
+- API keys must be stored securely and excluded from the repository.
+
+## 7. Evaluation Approach
+
+The prototype will be evaluated using a held-out, manually labeled sample of reviews.
+
+- Macro-F1, precision, and recall: Measure classification performance.
+- Confusion matrix: Identify commonly misclassified categories.
+- Priority review: Compare predicted priorities with reference assessments using the documented scoring rubric.
+- Functional tests: Check input handling, output validity, sorting, and API error handling.
+
+Performance results will be reported after testing.
+
+## 8. Success Criteria
+
+- Correctly identifies relevant complaint categories.
+- Produces valid and explainable priority scores.
+- Allows staff to review individual analyses and priority recommendations.
+- Demonstrates measurable classification performance on labeled test examples.
+
+## 9. Task 2 Prototype
+
+The working prototype is a Streamlit web app that sends guest feedback to the
+Groq API for structured AI classification. It then applies a transparent,
+documented scoring rubric to calculate the priority score. The app includes:
+
+- Sample guest reviews for a quick demonstration.
+- AI-generated category, summary, explanation, and risk indicators.
+- A 0-100 priority gauge with a score breakdown.
+- A recommended next step based on transparent rules.
+- A five-item in-session recent-analysis queue.
+- A hotel-lobby visual background with high-contrast interface controls.
+
+## 10. Tech Stack
+
+- Python - application logic and priority-scoring rubric.
+- Streamlit - interactive web interface.
+- Groq API - structured AI classification of guest feedback.
+- openai/gpt-oss-120b - model used through the Groq API.
+- python-dotenv - local environment-variable and API-key loading.
+- HTML/CSS - custom dashboard styling and priority gauge presentation.
+
+## 11. File Structure
 
 ```text
 SWYNEX-HotelPulse/
-├── analyzer.py
-├── dashboard.py
-├── evaluate.py
-├── evaluation_examples.json
-├── prepare_dataset.py
-├── evaluation_results.csv
-├── README.md
-└── .gitignore
+├── analyzer.py                     # Groq analysis and priority scoring logic
+├── dashboard.py                    # Streamlit web application
+├── assets/
+│   └── hotel-lobby-background.png  # Dashboard background image
+├── requirements.txt                # Python dependencies
+├── .env.example                    # API-key placeholder only
+├── .gitignore                      # Excludes .env and local virtual environments
+└── README.md                       # Project and Task 2 documentation
 ```
 
-## Getting Started
+### Run locally
 
-### 1. Clone the repository
+1. Create and activate a Python virtual environment.
+2. Install dependencies: `pip install -r requirements.txt`
+3. Copy `.env.example` to `.env` and add a valid `GROQ_API_KEY` locally.
+4. Run: `streamlit run dashboard.py`
 
-```bash
-git clone https://github.com/lohit555/SWYNEX-HotelPulse.git
-cd SWYNEX-HotelPulse
-```
+Never commit `.env` or an API key. The included `.env.example` contains only a
+placeholder.
 
-### 2. Create a virtual environment
+### Example input and output
 
-```bash
-python -m venv .venv
-```
+**Input**
 
-Activate it on Windows PowerShell:
+> Loud construction noise outside my room kept me awake until 2 AM.
 
-```powershell
-.venv\Scripts\Activate.ps1
-```
+**Expected prototype output**
 
-### 3. Install dependencies
+- Category: `Noise`
+- Likely severity: `serious`
+- Priority: `High` (60/100)
+- Recommended next step: Assign to the duty manager for prompt review and
+  guest follow-up.
+- Summary: Construction noise disrupted the guest's sleep.
+- Analysis explanation: The AI identified overnight construction noise as a serious comfort issue, classifying it as a High-priority Noise complaint with no safety, urgency, financial, or multiple-issue indicators.
 
-Install the packages required by the application:
-
-```bash
-pip install streamlit groq python-dotenv
-```
-
-If the repository contains a `requirements.txt` file, you can install the project's listed dependencies instead:
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Configure the API key
-
-Create a `.env` file in the project root:
-
-```env
-GROQ_API_KEY=your_groq_api_key_here
-```
-
-Replace the placeholder with your own Groq API key.
-
-**Security:** Never commit your `.env` file or expose your API key publicly.
-
-### 5. Run the application
-
-```bash
-streamlit run dashboard.py
-```
-
-Streamlit will provide a local URL where you can interact with the HotelPulse dashboard.
-
-## Model Evaluation
-
-HotelPulse includes a labelled evaluation set and an evaluation script.
-
-Run the evaluation with:
-
-```bash
-python evaluate.py
-```
-
-The script evaluates model predictions against the expected labels and reports:
-
-- Category classification accuracy
-- Complaint detection accuracy
-- Severity classification accuracy
-- Incorrect predictions, where applicable
-- Detailed results saved to `evaluation_results.csv`
-
-### Latest Evaluation Results
-
-The latest completed evaluation used 24 labelled examples. All 24 predictions completed successfully without API errors.
-
-| Metric | Result |
-|---|---:|
-| Category accuracy | 100.00% (24/24) |
-| Complaint detection accuracy | 100.00% (24/24) |
-| Severity accuracy | 100.00% (24/24) |
-| Failed predictions | 0 |
-
-No incorrect category, complaint-detection, or severity predictions were reported in this evaluation run.
-
-### Failure Cases and Limitations
-
-The evaluation process is designed to identify mismatches between expected and predicted labels. An earlier run exposed a category-classification failure involving a room-service phone that went unanswered and a delayed order. The model classified the complaint as `Food/Dining` instead of `Staff/Service`.
-
-The prompt and evaluation examples were subsequently refined. In the latest 24-example run, this mismatch and the other evaluated mismatches were no longer present.
-
-However, a perfect score on a small evaluation set does not guarantee perfect performance on unseen hotel reviews. Real-world feedback may contain ambiguous wording, multiple complaints, sarcasm, or safety issues that require human review. The evaluation set should be expanded to test performance across more varied examples.
-
-## Intended Users
-
-Hotel customer-support staff and hotel operations teams who need help organizing guest feedback, identifying complaint categories, and prioritizing issues for follow-up.
-
-## Project Goal
-
-HotelPulse aims to reduce the effort required to manually review hotel feedback by providing structured complaint classifications, severity assessments, and priority recommendations.
-
-The system is a prototype intended to support human decision-making, not replace professional judgment or operational safety procedures.
-
-## Repository
-
-GitHub: https://github.com/lohit555/SWYNEX-HotelPulse
+AI output can vary slightly. Priority is a decision-support recommendation,
+not an automated final decision.
