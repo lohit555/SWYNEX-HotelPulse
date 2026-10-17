@@ -1,3 +1,4 @@
+
 [
   {
     "id": 1,
@@ -67,14 +68,14 @@
     "text": "The air conditioner was a little noisy and did not cool the room very well.",
     "expected_category": "Room/Facilities",
     "expected_is_complaint": true,
-    "expected_severity": "minor"
+    "expected_severity": "moderate"
   },
   {
     "id": 11,
     "text": "The shower was broken and there was no hot water throughout our stay.",
     "expected_category": "Room/Facilities",
     "expected_is_complaint": true,
-    "expected_severity": "moderate"
+    "expected_severity": "serious"
   },
   {
     "id": 12,
