@@ -1,8 +1,11 @@
-gitignore
+
 .venv/
 .venv-1/
 .env
 __pycache__/
 *.pyc
-data/
+
+data/*
+!data/hotel_reviews_sample.csv
+
 evaluation_results.csv
