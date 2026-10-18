@@ -215,11 +215,3 @@ streamlit run dashboard.py
 ```
 
 Enter guest feedback to view the AI-generated classification, explanation, severity indicators, and priority recommendation.
-
-### Task 3 Status
-
-**Completed** — the prototype includes prompt refinement, a labeled evaluation set, an evaluation script, failure-case analysis, and an interactive web demo.
-
-## Repository
-
-GitHub: https://github.com/lohit555/SWYNEX-HotelPulse
