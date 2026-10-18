@@ -1,4 +1,3 @@
-
 [
   {
     "id": 1,
@@ -167,5 +166,187 @@
     "expected_category": "Positive",
     "expected_is_complaint": false,
     "expected_severity": "minor"
+  },
+  {
+    "id": 25,
+    "text": "The room was lovely, but there were crumbs on the desk when we arrived.",
+    "expected_category": "Cleanliness",
+    "expected_is_complaint": true,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 26,
+    "text": "We found used tissues in the bedside drawer and stains on the pillowcases.",
+    "expected_category": "Cleanliness",
+    "expected_is_complaint": true,
+    "expected_severity": "moderate"
+  },
+  {
+    "id": 27,
+    "text": "The elevator was out of order, and we had to carry heavy luggage up five flights of stairs.",
+    "expected_category": "Room/Facilities",
+    "expected_is_complaint": true,
+    "expected_severity": "moderate"
+  },
+  {
+    "id": 28,
+    "text": "The room key stopped working twice, and reception took nearly an hour to help us get back inside.",
+    "expected_category": "Staff/Service",
+    "expected_is_complaint": true,
+    "expected_severity": "moderate"
+  },
+  {
+    "id": 29,
+    "text": "The receptionist quickly replaced our room after we reported a broken lock, and handled it professionally.",
+    "expected_category": "Positive",
+    "expected_is_complaint": false,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 30,
+    "text": "The Wi-Fi disconnected every few minutes, making it difficult to attend my online meeting.",
+    "expected_category": "Room/Facilities",
+    "expected_is_complaint": true,
+    "expected_severity": "moderate"
+  },
+  {
+    "id": 31,
+    "text": "The advertised pool was closed for maintenance, but this was not mentioned before we booked.",
+    "expected_category": "Room/Facilities",
+    "expected_is_complaint": true,
+    "expected_severity": "moderate"
+  },
+  {
+    "id": 32,
+    "text": "The restaurant forgot one side dish, but corrected the order immediately when we asked.",
+    "expected_category": "Food/Dining",
+    "expected_is_complaint": true,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 33,
+    "text": "My meal contained peanuts even though I had clearly informed the server about my allergy.",
+    "expected_category": "Food/Dining",
+    "expected_is_complaint": true,
+    "expected_severity": "severe"
+  },
+  {
+    "id": 34,
+    "text": "The breakfast selection was small, but everything we tried tasted fresh and was well prepared.",
+    "expected_category": "Positive",
+    "expected_is_complaint": false,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 35,
+    "text": "The hotel is beside a busy road, and traffic made it difficult to get in and out on foot.",
+    "expected_category": "Location",
+    "expected_is_complaint": true,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 36,
+    "text": "The listing said parking was included, but we were charged an unexpected daily parking fee.",
+    "expected_category": "Value/Billing",
+    "expected_is_complaint": true,
+    "expected_severity": "moderate"
+  },
+  {
+    "id": 37,
+    "text": "A loud ventilation fan rattled all night even after we asked staff to check it.",
+    "expected_category": "Noise",
+    "expected_is_complaint": true,
+    "expected_severity": "moderate"
+  },
+  {
+    "id": 38,
+    "text": "There was a strong smell of cigarette smoke in our non-smoking room, and the smell remained for two days.",
+    "expected_category": "Cleanliness",
+    "expected_is_complaint": true,
+    "expected_severity": "serious"
+  },
+  {
+    "id": 39,
+    "text": "We requested extra towels in the afternoon, but they never arrived before checkout.",
+    "expected_category": "Staff/Service",
+    "expected_is_complaint": true,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 40,
+    "text": "The heating failed during freezing weather, and the room stayed dangerously cold overnight.",
+    "expected_category": "Room/Facilities",
+    "expected_is_complaint": true,
+    "expected_severity": "serious"
+  },
+  {
+    "id": 41,
+    "text": "The hotel charged the correct amount, explained every fee clearly, and refunded the deposit on time.",
+    "expected_category": "Positive",
+    "expected_is_complaint": false,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 42,
+    "text": "The lobby was attractive and check-in was smooth, but the bathroom sink drained very slowly.",
+    "expected_category": "Room/Facilities",
+    "expected_is_complaint": true,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 43,
+    "text": "A staff member helped us find a nearby pharmacy after we lost our medication, and was patient and kind.",
+    "expected_category": "Positive",
+    "expected_is_complaint": false,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 44,
+    "text": "The room overlooked the advertised garden, but late-night guests were shouting in the hallway every night.",
+    "expected_category": "Noise",
+    "expected_is_complaint": true,
+    "expected_severity": "moderate"
+  },
+  {
+    "id": 45,
+    "text": "Our reservation was missing at check-in, and staff left us waiting in the lobby for two hours without an update.",
+    "expected_category": "Staff/Service",
+    "expected_is_complaint": true,
+    "expected_severity": "serious"
+  },
+  {
+    "id": 46,
+    "text": "The soup was lukewarm and the bread was stale, although the server apologized when we mentioned it.",
+    "expected_category": "Food/Dining",
+    "expected_is_complaint": true,
+    "expected_severity": "moderate"
+  },
+  {
+    "id": 47,
+    "text": "The room was clean and quiet, but the final bill included a service fee that had not been disclosed.",
+    "expected_category": "Value/Billing",
+    "expected_is_complaint": true,
+    "expected_severity": "moderate"
+  },
+  {
+    "id": 48,
+    "text": "The bathroom grab bar came loose when I used it, and I nearly fell.",
+    "expected_category": "Room/Facilities",
+    "expected_is_complaint": true,
+    "expected_severity": "severe"
+  },
+  {
+    "id": 49,
+    "text": "The hotel was a short walk from the venue as promised, and the front desk gave clear directions.",
+    "expected_category": "Positive",
+    "expected_is_complaint": false,
+    "expected_severity": "minor"
+  },
+  {
+    "id": 50,
+    "text": "I reported a leaking ceiling twice, but water continued dripping onto the bed and our belongings.",
+    "expected_category": "Room/Facilities",
+    "expected_is_complaint": true,
+    "expected_severity": "serious"
   }
 ]
