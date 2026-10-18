@@ -45,6 +45,8 @@ This dataset contains approximately 515,000 hotel reviews, including positive an
 
 A manually labeled evaluation set of 24 hotel feedback examples is used to evaluate the Task 3 prototype. Since the original dataset does not provide verified complaint-category labels, the examples are labeled with expected categories, complaint status, and severity for evaluation. Hotel reviews serve as proxies for complaints, not actual hotel support tickets.
 
+Dataset Attribution: A 2,000-review sample was extracted from the original Kaggle dataset for exploratory purposes. The Kaggle page lists the dataset under the CC0: Public Domain licence and acknowledges Booking.com as the source of the scraped reviews. The sample's sentiment labels are not ground-truth labels for HotelPulse's complaint categories or priority scores.
+
 ## 5. Proposed Approach
 
 - Use an existing AI model/API to classify reviews into predefined categories.
