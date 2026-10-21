@@ -114,14 +114,12 @@ Task 3 improved classification through prompt refinement, evaluation, and failur
 
 ### Evaluation Results
 
-The latest evaluation completed all 50 examples successfully.
-
-| Metric | Result |
-|---|---:|
-| Category classification accuracy | 94% (47/50) |
-| Complaint detection accuracy | 96% (48/50) |
-| Severity classification accuracy | 88% (44/50) |
-| Failed predictions | 0 |
+| Metric | Correct Predictions | Accuracy |
+|---|---:|---:|
+| Category Classification | 47/50 | 94% |
+| Complaint Detection | 48/50 | 96% |
+| Severity Classification | 44/50 | 88% |
+| Failed Predictions | 0/50 | 0 failures |
 
 **Limitations:** The evaluation set is small and manually constructed, and its labels have not been independently validated. These results represent preliminary prototype performance, not guaranteed accuracy on real-world hotel feedback.
 
@@ -173,6 +171,23 @@ Actual AI output may vary between runs.
 ### Final Outcome
 
 HotelPulse demonstrates an AI-assisted workflow for complaint classification, severity assessment, priority scoring, and interactive review. The 50-example evaluation provides an initial measure of performance, but broader testing with independently labeled data is needed before real-world deployment.
+
+### Example Output
+
+**Input:**
+
+> Loud construction noise outside my room kept me awake until 2 AM.
+
+| Field | Result |
+|---|---|
+| Category | Noise |
+| Severity | Serious |
+| Priority Score | 60/100 |
+| Priority Level | High |
+| Summary | Construction noise disrupted the guest's sleep. |
+| Recommended Action | Refer the issue to the duty manager for review and guest follow-up. |
+
+*Note: This is an illustrative example. Actual AI-generated results may vary between runs.*
 
 ---
 
